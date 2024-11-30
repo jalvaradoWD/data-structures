@@ -1,3 +1,5 @@
+from random import randint
+
 class Node:
 	def __init__(self, val=None, prev=None, next=None):
 		self.val = val
@@ -66,7 +68,7 @@ class LinkedList:
 		if current.prev is not None:
 			current.prev.next = current.next
 
-	def bubble_sort(self):
+	def bubble_sort_data(self):
 		# [10, 1, 11]
 		current = self.head
 		counter = 0
@@ -86,26 +88,41 @@ class LinkedList:
 			else:
 				break
 
-	def merge_sort(self, head:Node):
-		if not head or not head.next:
-			return self.head
 
-		# Split list in half
-		left = head
-		right = self.get_mid(head)
-		tmp = right.next # type: ignore
-		right.next = None # type: ignore
-		right = tmp
+	def bubble_sort_memory(self):
+		"""
+				This is the bubble sort method where the sorting
+			happens in the links to a node's memory location,
+			rather than having to swap that data values of the
+			node.
+		"""
+		current = self.head
+		next_holder = None
+		prev_holder = None
+		counter = 0
+		list_view = self.list_values()
 
-		left = self.merge_sort(left)
-		right = self.merge_sort(right) # type: ignore
+		while True:
+			while current.next is not None:
+				next_holder = current.next
+				if current.val >  next_holder.val:
+					if prev_holder is not None:
+						prev_holder.next = next_holder
+						current.next = next_holder.next
+						next_holder.next = current
+					counter += 1
+				prev_holder = current
+				current = next_holder
+				list_view = self.list_values()
 
-		return self.merge(left, right)
-
-	def merge(self, left:Node, right:Node):
-		tail = dummy = Node()
-		pass
-
+			if counter > 0:
+				current = self.head
+				counter = 0
+				next_holder = None
+				prev_holder = None
+				list_view = self.list_values()
+			else:
+				break
 
 	def get_mid(self, head: Node):
 		slow, fast = head, head.next
@@ -141,7 +158,7 @@ def sort_number_in_file(ll:LinkedList | None, filepath:str):
 	new_file = open(filepath, 'w')
 	with new_file as f:
 		if ll is not None:
-			ll.bubble_sort()
+			ll.bubble_sort_data()
 			sorted_list = ll.list_values()
 			sorted_buffer = []
 
@@ -150,3 +167,20 @@ def sort_number_in_file(ll:LinkedList | None, filepath:str):
 
 			f.writelines(sorted_buffer)
 	new_file.close()
+
+
+ll = LinkedList(Node(0))
+
+for i in range(100):
+	ll.append(Node(randint(0, 1000)))
+
+
+print(f"Unsorted List:\n{ll.list_values()}\n")
+
+ll.append(Node(4))
+ll.append(Node(3))
+ll.append(Node(2))
+ll.append(Node(1))
+
+ll.bubble_sort_memory()
+print(f"Sorted List:\n{ll.list_values()}\n")
