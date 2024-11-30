@@ -1,14 +1,11 @@
-import random
-
-
 class Node:
-	def __init__(self, val, prev=None, next=None):
+	def __init__(self, val=None, prev=None, next=None):
 		self.val = val
 		self.prev = prev
 		self.next = next
 
 	def __repr__(self) -> str:
-		return f"<Node {self.val}>"
+		return f"{self.val}"
 
 
 class LinkedList:
@@ -72,52 +69,84 @@ class LinkedList:
 	def bubble_sort(self):
 		# [10, 1, 11]
 		current = self.head
-		test = self.list_values()
-		is_sorted = None
+		counter = 0
 
-		while current is not None and current.next is not None:
-			if current.val > current.next.val:
-				# if current is greater than next
-				# then swap current and next locations
-				if current.prev is not None:
-					current.prev.next = current.next
+		while True:
+			while current is not None and current.next is not None:
+				if current.val > current.next.val:
+					next_val_holder = current.next.val
+					current.next.val = current.val
+					current.val = next_val_holder
+					counter += 1
+				current = current.next
 
-				if current.next is not None:
-					current.next.prev = current.prev
-
-				current.prev = current.next
-
-				current.next = current.prev.next
-				current.prev.next = current
-				if current == self.head:
-					self.head = current.prev
-
-				is_sorted = False
-
-			current = current.next
-			test = self.list_values()
-
-			if current is None and is_sorted == False:
+			if counter > 0:
 				current = self.head
-			elif is_sorted == True:
+				counter = 0
+			else:
 				break
+
+	def merge_sort(self, head:Node):
+		if not head or not head.next:
+			return self.head
+
+		# Split list in half
+		left = head
+		right = self.get_mid(head)
+		tmp = right.next # type: ignore
+		right.next = None # type: ignore
+		right = tmp
+
+		left = self.merge_sort(left)
+		right = self.merge_sort(right) # type: ignore
+
+		return self.merge(left, right)
+
+	def merge(self, left:Node, right:Node):
+		tail = dummy = Node()
+		pass
+
+
+	def get_mid(self, head: Node):
+		slow, fast = head, head.next
+		while fast and fast.next:
+			slow = slow.next # type: ignore
+			fast = fast.next.next
+		return slow
 
 	def list_values(self):
 		current = self.head
 		res = []
 		while current.next is not None:
-			res.append(current)
+			res.append(current.val)
 			current = current.next
-		res.append(current)
+		res.append(current.val)
 		return res
 
 
-ll = LinkedList(Node(2))
 
-test_list = [3,1,56,1,2,3]
+def sort_number_in_file(ll:LinkedList | None, filepath:str):
+	file_vals = open(filepath, 'r')
 
-for val in test_list:
-	ll.append(Node(val))
+	with file_vals as f:
+		for val in f.readlines():
+			new_node = Node(int(val[:-1]))
+			if ll is None:
+				ll = LinkedList(new_node)
+			else:
+				ll.append(new_node)
 
-ll.bubble_sort()
-print(ll.list_values())
+	file_vals.close()
+
+	new_file = open(filepath, 'w')
+	with new_file as f:
+		if ll is not None:
+			ll.bubble_sort()
+			sorted_list = ll.list_values()
+			sorted_buffer = []
+
+			for i in sorted_list:
+				sorted_buffer.append(f"{i}\n")
+
+			f.writelines(sorted_buffer)
+	new_file.close()

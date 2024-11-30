@@ -1,17 +1,24 @@
-class Student:
-	def __init__(self, first_name:str, last_name:str, gpa:float):
-		self.first_name = first_name
-		self.last_name = last_name
-		self.gpa = gpa
+import random
+from sorting.LinkedList import LinkedList, Node, sort_number_in_file
 
-	def __repr__(self) -> str:
-		return f"FirstName: {self.first_name}\nLastName: {self.last_name}\nGPA: {self.gpa}\n"
+ll = LinkedList(Node(0))
 
-	def full_name(self):
-		return f"{self.first_name} {self.last_name}"
+print(ll.list_values())
 
-new_stu = Student("Jose", "Alvarado", 4.0)
+def create_file_rand_ints(n:int):
+	file = open("values.txt", "w")
+	file2 = open("values_control.txt", "w")
+	val_list = []
+	for i in range(n):
+		val_list.append(f"{random.randint(0, 1000)}\n")
 
-print(new_stu)
+	with file as f:
+		f.writelines(val_list)
+	with file2 as f:
+		f.writelines(val_list)
+	file.close()
+	file2.close()
 
-print(new_stu.full_name())
+create_file_rand_ints(100)
+sort_number_in_file(ll,"values.txt")
+
