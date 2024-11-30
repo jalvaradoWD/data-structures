@@ -91,10 +91,10 @@ class LinkedList:
 
 	def bubble_sort_memory(self):
 		"""
-				This is the bubble sort method where the sorting
-			happens in the links to a node's memory location,
-			rather than having to swap that data values of the
-			node.
+		This is the bubble sort method where the sorting
+		happens in the links to a node's memory location,
+		rather than having to swap that data values of the
+		node.
 		"""
 		current = self.head
 		next_holder = None
@@ -171,16 +171,11 @@ def sort_number_in_file(ll:LinkedList | None, filepath:str):
 
 ll = LinkedList(Node(0))
 
-for i in range(100):
+for i in range(1000):
 	ll.append(Node(randint(0, 1000)))
 
 
 print(f"Unsorted List:\n{ll.list_values()}\n")
-
-ll.append(Node(4))
-ll.append(Node(3))
-ll.append(Node(2))
-ll.append(Node(1))
 
 ll.bubble_sort_memory()
 print(f"Sorted List:\n{ll.list_values()}\n")
